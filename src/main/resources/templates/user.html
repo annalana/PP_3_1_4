@@ -4,8 +4,41 @@
     <title>Spring Security Example</title>
 </head>
 <body>
+<header>
+    <nav>
+        <a th:if="${userroles.contains('ROLE_ADMIN')}" href="/admin">Страница Администратора</a>
+        <a href="/user">Кабинет пользователя</a>
+        <a href="/logout">Выйти</a>
+    </nav>
+</header>
 <h1>User, welcome spring boot security page!</h1>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>Логин (имя пользователя)</th>
+            <th>Пароль</th>
+            <th>Email</th>
+            <th>Номер телефона</th>
+            <th>Роли</th>
+        </tr>
+        <tr>
 
+            <td th:text="${userinfo.getUser().getId()}"></td>
+            <td th:text="${userinfo.getUser().getName()}"></td>
+            <td th:text="${userinfo.getUser().getLastName()}"></td>
+            <td th:text="${userinfo.getUser().getLogin()}"></td>
+            <td th:text="${userinfo.getUser().getPassword()}"></td>
+            <td th:text="${userinfo.getUser().getEmail()}"></td>
+            <td th:text="${userinfo.getUser().getPhoneNumber()}"></td>
+            <td> <th:block th:each="role:${userinfo.getUser().getRoles()}">
+                <p th:text="${role.toString()}"></p>
+            </th:block></td>
+
+        </tr>
+
+    </table>
 
 </body>
 </html>
