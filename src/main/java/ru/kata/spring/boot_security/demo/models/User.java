@@ -3,7 +3,7 @@ package ru.kata.spring.boot_security.demo.models;
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -26,29 +26,14 @@ public class User {
     private BigInteger phoneNumber;
     @Column
     private String email;
-    /*@OneToMany(mappedBy = "role", targetEntity = Role.class)
-    List<Role> roles;*/
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     Set<Role> roles = new HashSet<>();
+
     // Конструкторы
     public User() {}
-    public User(User user) {
-        id = user.getId();
-        name = user.getName();
-        lastName = user.getLastName();
-        login = user.getLogin();
-        password = user.getPassword();
-        phoneNumber = user.getPhoneNumber();
-        email = user.getEmail();
-        roles = user.getRoles();
-    }
-    public User(User user, List<Role> roles) {
-        this(user);
-        this.roles.addAll(roles);
-    }
     // Методы
     public void addNewRole(Role role) {
         roles.add(role);
@@ -61,6 +46,20 @@ public class User {
                 .append(" has Email: ").append(getEmail())
                 .append(" and phone number: ").append(getPhoneNumber())
                 .toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return login.equals(user.login) && password.equals(user.password) && Objects.equals(name, user.name)
+                && Objects.equals(lastName, user.lastName) && Objects.equals(phoneNumber, user.phoneNumber)
+                && Objects.equals(email, user.email) && roles.equals(user.roles);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(login, name, lastName, email);
     }
 
     // Геттеры и сеттеры класса

@@ -10,20 +10,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.security.UserDetails;
-import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
-
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class MainController {
     private UserService userService;
-    private RoleService roleService;
     @Autowired
-    MainController(UserService userService, RoleService roleService) {
+    MainController(UserService userService) {
         this.userService = userService;
-        this.roleService = roleService;
+
     }
     @GetMapping(value= {"/", "/index"})
     public String getIndexPage () {
