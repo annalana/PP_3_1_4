@@ -1,5 +1,7 @@
 package ru.kata.spring.boot_security.demo.models;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -8,14 +10,15 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+//Имплементировать юзер-детейлс
+public class User  implements UserDetails {
     // Поля
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private long id;
     @Column(name="login", unique = true)
-    private String login;
+    private String username;
     @Column(name="passworduser")
     private String password;
     @Column(name = "username")
@@ -26,42 +29,66 @@ public class User {
     private BigInteger phoneNumber;
     @Column
     private String email;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    Set<Role> roles = new HashSet<>();
+    Set<Role> authorities = new HashSet<>();
 
     // Конструкторы
     public User() {}
+
     // Методы
-    public void addNewRole(Role role) {
-        roles.add(role);
-    }
     @Override
     public String toString() {
         return new StringBuilder("User \n with id-").append(getId()).append(" \n")
-                .append(getLogin()).append(" pwd:").append(getPassword()).append("\n")
+                .append(getUsername()).append(" pwd:").append(getPassword()).append("\n")
                 .append(getName()).append(getLastName()).append("\n")
                 .append(" has Email: ").append(getEmail())
                 .append(" and phone number: ").append(getPhoneNumber())
                 .toString();
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return login.equals(user.login) && password.equals(user.password) && Objects.equals(name, user.name)
+        return username.equals(user.username) && password.equals(user.password) && Objects.equals(name, user.name)
                 && Objects.equals(lastName, user.lastName) && Objects.equals(phoneNumber, user.phoneNumber)
-                && Objects.equals(email, user.email) && roles.equals(user.roles);
+                && Objects.equals(email, user.email) && authorities.equals(user.authorities);
     }
     @Override
     public int hashCode() {
-        return Objects.hash(login, name, lastName, email);
+        return Objects.hash(username, name, lastName, email);
     }
-
+    @Override
+    public Set<Role> getAuthorities() {
+        return authorities;
+    }
+    @Override
+    public String getPassword() {
+        return password;
+    }
+    @Override
+    public String getUsername() {
+        return username;
+    }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
     // Геттеры и сеттеры класса
     public long getId() {
         return id;
@@ -93,20 +120,11 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-    public Set<Role> getRoles() {
-        return roles;
+    public void setAuthorities(Set<Role> roles) {
+        this.authorities = roles;
     }
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-    public String getLogin() {
-        return login;
-    }
-    public void setLogin(String login) {
-        this.login = login;
-    }
-    public String getPassword() {
-        return password;
+    public void setUsername(String login) {
+        this.username = login;
     }
     public void setPassword(String password) {
         this.password = password;

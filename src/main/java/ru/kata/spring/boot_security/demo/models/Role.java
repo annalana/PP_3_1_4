@@ -15,13 +15,10 @@ public class Role implements GrantedAuthority {
     int Id;
     @Column(name="role", unique = true)
     String role;
-    @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    Set<User> users;
     public Role() {}
     public Role(String role) {
         this.role = role;
     }
-
     // Методы
     @Override
     public String getAuthority() {
@@ -31,7 +28,6 @@ public class Role implements GrantedAuthority {
     public String toString() {
         return this.getRole();
     }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -56,11 +52,5 @@ public class Role implements GrantedAuthority {
     }
     public void setRole(String role) {
         this.role = role;
-    }
-    public Set<User> getUsers() {
-        return users;
-    }
-    public void setUsers(Set<User> users) {
-        this.users = users;
     }
 }

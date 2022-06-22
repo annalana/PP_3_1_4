@@ -9,36 +9,34 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
-
     private final SuccessUserHandler successUserHandler;
     @Autowired
     public WebSecurityConfig(SuccessUserHandler successUserHandler, UserDetailsService userDetailsService) {
         this.successUserHandler = successUserHandler;
         this.userDetailsService = userDetailsService;
     }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.userDetailsService(userDetailsService);
-
         http
-                .authorizeRequests()
-                    .antMatchers("/admin/**", "/admin").hasRole("ADMIN")
-                    .antMatchers("/", "/index").permitAll()
-                    .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                    .successHandler(successUserHandler)
-                    .permitAll()
-                .and()
-                    .logout()
-                    .permitAll();
+            .authorizeRequests()
+                .antMatchers("/admin/**", "/admin").hasRole("ADMIN")
+                .antMatchers("/", "/index", "/css/**", "/js/**").permitAll()
+                .anyRequest().authenticated()
+            .and()
+                .formLogin().loginPage("/login")
+                .loginProcessingUrl("/do_login")
+                .successHandler(successUserHandler)
+                .permitAll()
+            .and()
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout/**" ))
+                .permitAll();
     }
     @Bean
     public PasswordEncoder getPasswordEncoder() {

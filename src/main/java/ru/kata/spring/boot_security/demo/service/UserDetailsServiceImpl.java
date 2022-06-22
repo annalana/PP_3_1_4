@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.kata.spring.boot_security.demo.security.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -17,12 +16,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userDao = userDao;
     }
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.getUser(username);
         if (user != null) {
-            return new UserDetails(user);
+            return user;
         } else {
-            return new UserDetails(user);
+            return null;
         }
     }
 }

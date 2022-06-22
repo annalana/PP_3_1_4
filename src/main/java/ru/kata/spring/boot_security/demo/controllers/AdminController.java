@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -14,29 +15,34 @@ import java.util.*;
 @RequestMapping(value = "/admin")
 public class AdminController {
     private UserService userService;
-
-
     @Autowired
     AdminController(UserService userService) {
         this.userService = userService;
     }
     @GetMapping
     public String allUsersList(ModelMap model) {
+        User user = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         List<User> userList = userService.getUserList();
+        model.addAttribute("current", user);
         model.addAttribute("users", userList);
+        return "admin_panel";
+    }
+    @GetMapping(value = "/adding_form")
+    public String getAddingForm(ModelMap model) {
+        User user = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        model.addAttribute("current", user);
         model.addAttribute("newuser", new User());
-        return "allusers";
+        return "add_user";
+    }
+    @GetMapping(value="/delete_form")
+    public String getDeleteForm(@RequestParam(value="id") long id, ModelMap model) {
+           model.addAttribute("user", userService.getUser(id));
+        return "delete_form";
     }
     @GetMapping(value="/delete")
-    public String deleteUser(@RequestParam(value="id") long id, ModelMap model) {
-        try {
-            userService.removeUser(id);
-            model.addAttribute("message", "User by ID " + id + " deleted.");
-        } catch (Exception e) {
-            model.addAttribute("message", "ERROR. User was not deleted");
-            e.printStackTrace();
-        }
-        return "userdeleted";
+    public String deleteUser(@ModelAttribute User user, ModelMap model) {
+        userService.removeUser(user.getId());
+        return allUsersList(model);
     }
     @GetMapping(value = "/add")
     public String saveUser(@ModelAttribute User user,
@@ -49,24 +55,17 @@ public class AdminController {
         if (id != -1) {
             model.addAttribute("user", userService.getUser(id));
         }
-        return "redactuser";
+        return "edit_form";
     }
     @GetMapping(value = "/do_redact")
     public String doRedact(@ModelAttribute User user,
                            ModelMap model) {
-        model.addAttribute("redactionmessage", "Success. " +
-                    userService.redactUser(user.getId(), user));
-        return "redactingresult";
+        userService.redactUser(user.getId(), user);
+        return allUsersList(model);
     }
     @ExceptionHandler(Exception.class)
     public String handleException(Model model, Exception e) {
         e.printStackTrace();
-//        UserDetails userDetails = (UserDetails)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-//        List<String> roles = new ArrayList<>();
-//        for(Role role : userDetails.getUser().getRoles()) {
-//            roles.add(role.getRole());
-//        }
-//        model.addAttribute("userroles", roles);
         model.addAttribute("error", e.getMessage());
         return "error";
     }
