@@ -68,46 +68,48 @@
     <h1>Admin panel</h1>
       <ul class="nav nav-tabs">
         <li class="nav-item">
-          <a class="nav-link active" href="#" onclick="change_tab()">Users table</a>
+          <a class="nav-link active" href="#" onclick="change_tab(1)">Users table</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/admin/adding_form" onclick="change_tab()">New User</a>
+          <a class="nav-link" href="#" onclick="change_tab(2)">New User</a>
         </li>
       </ul>
     <div class="inner-admin-panel border" id="js-tab">
       <h6>All Users</h6>
-      <table class="table table-striped caption-top">
-        <tr>
-          <th>ID</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Login</th>
-          <th>Email</th>
-          <th>Roles</th>
-          <th>Edit</th>
-          <th>Delete</th>
-        </tr>
-        <th:block th:each="user:${users}">
+      <div class="bg-white">
+        <table class="table table-striped caption-top">
           <tr>
-            <td th:text="${user.getId()}"></td>
-            <td th:text="${user.getName()}"></td>
-            <td th:text="${user.getLastName()}"></td>
-            <td th:text="${user.getUsername()}"></td>
-            <td th:text="${user.getEmail()}"></td>
-            <td>
-              <th:block th:each="role:${user.getAuthorities()}">
-                <span th:text="${role.toString()}"></span>
-              </th:block>
-            </td>
-            <td>
-              <a class="btn btn-info"  href="#" th:id="${user.getId()}" type="button" data-toggle="modal" data-target="#editingModal" th:onclick="|modalEdit('${user.getId}')|">Edit</a>
-            </td>
-            <td>
-              <a class="btn btn-danger" th:href="'/admin/delete?id=' + ${user.getId()}" type="button" data-toggle="modal" data-target="#deletingModal" th:onclick="|modalDelete('${user.getId}')|">Delete</a>
-            </td>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Login</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Edit</th>
+            <th>Delete</th>
           </tr>
-        </th:block>
-      </table>
+          <th:block th:each="user:${users}">
+            <tr>
+              <td th:text="${user.getId()}"></td>
+              <td th:text="${user.getName()}"></td>
+              <td th:text="${user.getLastName()}"></td>
+              <td th:text="${user.getUsername()}"></td>
+              <td th:text="${user.getEmail()}"></td>
+              <td>
+                <th:block th:each="role:${user.getAuthorities()}">
+                  <span th:text="${role.toString()}"></span>
+                </th:block>
+              </td>
+              <td>
+                <a class="btn btn-info"  href="#" th:id="${user.getId()}" type="button" data-toggle="modal" data-target="#editingModal" th:onclick="|modalEdit('${user.getId}')|">Edit</a>
+              </td>
+              <td>
+                <a class="btn btn-danger" href="#" type="button" data-toggle="modal" data-target="#deletingModal" th:onclick="|modalDelete('${user.getId}')|">Delete</a>
+              </td>
+            </tr>
+          </th:block>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -134,8 +136,19 @@
               .then(response => response.text())
               .then(content => form.innerHTML = content);
       div.append(form);
-      // th:href="'/admin/redact?id=' + ${user.getId()}"
      }
+     // function change_tab(tab_id) {
+     //  if (tab_id == 2) {
+     //    let div = document.getElementById('js-tab');
+     //    div.innerHTML="";
+     //    let tab = document.createElement("div");
+     //    fetch("/admin/adding_form")
+     //            .then(response => response.text())
+     //            .then(content => tab.innerHTML = content);
+     //    div.append(tab);
+     //  }
+     //
+     // }
   </script>
 </body>
 </html>

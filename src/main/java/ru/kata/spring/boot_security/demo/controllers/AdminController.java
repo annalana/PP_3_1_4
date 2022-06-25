@@ -29,10 +29,8 @@ public class AdminController {
     }
     @GetMapping(value = "/adding_form")
     public String getAddingForm(ModelMap model) {
-        User user = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        model.addAttribute("current", user);
         model.addAttribute("newuser", new User());
-        return "add_user";
+        return "add_user_form";
     }
     @GetMapping(value="/delete_form")
     public String getDeleteForm(@RequestParam(value="id") long id, ModelMap model) {

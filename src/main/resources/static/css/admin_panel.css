@@ -29,10 +29,12 @@ h1 {
     width: 75%;
     float:right;
 }
+#js-tab .inner-admin-panel div {
+    padding: 20px 2%;
+}
 .table {
     width: 96%;
-    /*padding: 20px;*/
-    margin: 0 2%;
+    /*margin: 50px 2%;*/
 }
 .table tr {
     height: min-content;
@@ -55,5 +57,26 @@ h1 {
 #editForm label {
     font-weight: bold;
 }
-
+.inner-admin-panel-add {
+    background: white;
+    display: block;
+}
+.inner-admin-panel-add#js-tab form#js_new_user_form {
+    margin: 0 auto;
+    width: 40%;
+    max-width: 500px;
+}
+.inner-admin-panel-add form#js_new_user_form div{
+    margin: 0 auto;
+    text-align: center;
+}
+.inner-admin-panel-add form#js_new_user_form label {
+    font-weight: bold;
+}
+.inner-admin-panel-add form#js_new_user_form .btn {
+    display: block;
+    width: 20%;
+    min-width: 80px;
+    margin: 0 auto;
+}
 
