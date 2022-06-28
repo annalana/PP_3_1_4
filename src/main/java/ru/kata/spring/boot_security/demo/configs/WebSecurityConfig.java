@@ -27,14 +27,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .authorizeRequests()
                 .antMatchers("/admin/**", "/admin").hasRole("ADMIN")
-                .antMatchers("/", "/index", "/css/**", "/js/**").permitAll()
+                .antMatchers("/", "/api/login", "/api/get_login", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
-            .and()
-                .formLogin().loginPage("/login")
-                .loginProcessingUrl("/do_login")
+                .and()
+                .formLogin().loginPage("/")
+                .loginProcessingUrl("/api/login")
                 .successHandler(successUserHandler)
                 .permitAll()
-            .and()
+                .and()
+                .httpBasic()
+                .and()
+                .csrf().disable()
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout/**" ))
                 .permitAll();
     }

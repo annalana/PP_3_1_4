@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/application.css}">
+    <title>User-Managment Application</title>
+</head>
+<body class="bg-light">
+    <div class="api-context d-none" id="login_page">
+        <div class="centered">
+            <h3>Please, sign in </h3>
+            <form name="login_form" id="login_form" method="post" action="#" onsubmit="set_login(); return false;">
+                <input type="text" name="username" placeholder="Login" id="username">
+                <input type="password" name="password" placeholder="Password" id="password">
+                <input class="btn btn-primary" type="submit" value="Sign in">
+            </form>
+            <div th:if="${param.error}" style="color: red">Неправильные имя и пароль</div>
+        </div>
+    </div>
+    <div class="api-context d-none bg-light" id="admin_page">
+        <div class="modal fade" id="editingModal" tabindex="-1" role="dialog" aria-labelledby="editingModalTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editingModalTitle">Edit User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="editFormContainer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="deletingModal" tabindex="-1" role="dialog" aria-labelledby="deletingModalTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deletingModalTitle">Delete User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div id="deleteFormContainer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+                <p class="navbar-brand">
+                    <b id="current_username"></b>
+                    <span> with roles: </span>
+                    <span id="current_roles"></span>
+
+                </p>
+                <div class="collapse navbar-collapse" id="navbarText">
+                    <ul class="navbar-nav mr-auto logout">
+                        <li class="nav-item">
+                            <a class="nav-link" th:href="@{/logout}">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <main>
+            <div class="left-menu bg-white">
+                <ul class="list-group">
+                    <a href="/admin" class="list-group-item list-group-item-action active">Admin</a>
+                    <a href="/user" class="list-group-item list-group-item-action">User</a>
+                </ul>
+            </div>
+            <div class="main-part ">
+                <h1>Admin panel</h1>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="tab-1" href="#" onclick="change_admin_tab(1)">Users table</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="tab-2" href="#" onclick="change_admin_tab(2)">New User</a>
+                    </li>
+                </ul>
+            <div class="border" id="js-tab"></div>
+            </div>
+        </main>
+    </div>
+    <div class="api-context d-none" id="user_page"></div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script th:src="@{/js/login.js}"></script>
+<script>
+    let current_user = null;
+    let roles = [];
+    window.onload = getBasePage();
+
+    function getBasePage() {
+        if (current_user != null) {
+            if (roles.indexOf("ROLE_ADMIN") != -1) {
+                get_admin_panel();
+            } else {
+                get_user_page();
+            }
+        } else {
+            get_login();
+        }
+    }
+    function admin_table() {
+        let tab =  document.getElementById("js-tab");
+        let innerHTML = `
+ <div class="inner-admin-panel border" id="admin_table">
+    <h6>All Users</h6>
+    <div class="bg-white">
+        <table class="table table-striped caption-top">
+        <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Login</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+`;
+        fetch("/api/get_users_table")
+            .then(response => response.json())
+            .then(table => {
+                for (let n in table) {
+                    let user = table[n];
+                    let user_roles = "";
+                    for (let i in user.authorities) {
+                        user_roles += user.authorities[i].role + " ";
+                    }
+                    innerHTML += `
+<tr>
+    <td>${user.id}</td>
+    <td>${user.name}</td>
+    <td>${user.lastName}</td>
+    <td>${user.username}</td>
+    <td>${user.email}</td>
+    <td>${user_roles}</td>
+    <td>
+        <a class="btn btn-info"  href="#" id="${user.id}" type="button" data-toggle="modal" data-target="#editingModal" onclick="modalEdit(${user.id})">Edit</a>
+    </td>
+    <td>
+        <a class="btn btn-danger" href="#" type="button" data-toggle="modal" data-target="#deletingModal" onclick="modalDelete(${user.id})">Delete</a>
+    </td>
+</tr>
+                        `;
+
+                }
+                innerHTML+="</table>";
+                tab.innerHTML = innerHTML;
+            });
+
+        document.getElementById("tab-2").classList.remove("active");
+        document.getElementById("tab-1").classList.add("active");
+    }
+    function add_user_form() {
+        let tab =  document.getElementById("js-tab");
+        let innerHTML = `
+<div class="inner-admin-panel-add border">
+    <h6>Add new user</h6>
+    <div class="border">
+        <form method="get" action="#" onsubmit="fetch_add(this); return false;" id="js_new_user_form">
+            <div class="form-group">
+                <label for="login">Login</label>
+                <input type="text" class="form-control" name="username" id="username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="text" class="form-control" name="password" id="password">
+            </div>
+            <div class="form-group">
+                <label for="name">First Name</label>
+                <input type="text" class="form-control" name="name" id="name">
+            </div>
+            <div class="form-group">
+                <label for="lastname">Last Name</label>
+                <input type="text" class="form-control" name="lastName" id="lastName">
+            </div>
+            <div class="form-group">
+                <label for="login">Phone Number</label>
+                <input type="text" class="form-control" name="phoneNumber" id="phoneNumber">
+            </div>
+            <div class="form-group">
+                <label for="login">Email</label>
+                <input type="text" class="form-control" name="email" id="email">
+            </div>
+            <div class="form-group">
+                <label for="authorities">Roles</label>
+                <select multiple class="form-control" name="authorities" id="authorities">
+                    <option value="ROLE_GUEST">GUEST</option>
+                    <option value="ROLE_USER" selected>USER</option>
+                    <option value="ROLE_ADMIN">ADMIN</option>
+                </select>
+            </div>
+            <input type="submit" class="btn btn-success btn-lg" value="Add new user">
+        </form>
+    </div>
+</div>`;
+        tab.innerHTML = innerHTML;
+        document.getElementById("tab-1").classList.remove("active");
+        document.getElementById("tab-2").classList.add("active");
+    }
+    function get_admin_panel() {
+        document.getElementById("current_username").innerText = current_user.username;
+        document.getElementById("current_roles").innerText = roles;
+        document.getElementById("admin_page").classList.remove("d-none");
+        change_admin_tab(1);
+    }
+    function change_admin_tab(tab_id) {
+        if (tab_id == 2) {
+            add_user_form();
+        }
+        if (tab_id == 1) {
+            admin_table();
+        }
+    }
+    function fetch_add() {
+        let formdata = $("#js_new_user_form").serialize();
+        let url = "/api/add_user?" + formdata;
+        fetch(url)
+            .then((response) => {
+                change_admin_tab(1);
+            })
+            .catch(function (err) {
+                console.error('Fetch Error :-S', err);
+            });
+    }
+    function get_user_page() {
+        let innerHTML = `
+
+        `
+    }
+
+
+
+</script>
+</body>
+</html>

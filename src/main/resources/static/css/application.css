@@ -1,0 +1,98 @@
+#login_page div.centered {
+    margin: 30px auto;
+    width: fit-content;
+    max-width: 300px;
+}
+#login_page div.centered h3 {
+    display: inline-block;
+    font-weight: bold;
+}
+#login_page div.centered * {
+    width: 100%;
+}
+#login_page div.centered .btn {
+    margin-top: 5px;
+}
+
+
+#admin_page .navbar-brand {
+    display: inline;
+    height: min-content;
+}
+#admin_page .logout {
+    position: absolute;
+    right: 0;
+}
+#admin_page .navbar-brand {
+    margin: 0;
+    padding: 0;
+}
+#admin_page main {
+    margin-top: 20px;
+    margin-right: 10%;
+}
+#admin_page main .left-menu {
+    margin: 0;
+    width: 20%;
+    display: inline-block;
+    float:left;
+    max-width: 300px;
+    min-height: 80vh;
+}
+#admin_page main .left-menu .list-group-item.list-group-item-action {
+    border: none;
+}
+#admin_page main .main-part {
+    display: inline-block;
+    width: 75%;
+    float:right;
+}
+#admin_page main .main-part h1 {
+    padding: 10px;
+}
+#admin_page main .main-part #js-tab h6 {
+    font-size: large;
+    display: block;
+    padding: 5px;
+}
+#admin_page main .main-part #js-tab .inner-admin-panel div {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+#admin_page main .main-part #js-tab .inner-admin-panel div .table {
+    width: 96%;
+    margin: 0 2%;
+}
+#admin_page main .main-part #js-tab .inner-admin-panel div .table tr {
+    height: min-content;
+    padding: 0;
+}
+#admin_page #editForm {
+    text-align: center;
+}
+#admin_page #editForm label {
+    font-weight: bold;
+}
+#admin_page .inner-admin-panel-add div {
+    background: white;
+}
+#admin_page main .main-part #js-tab .inner-admin-panel-add form#js_new_user_form {
+    margin: 0 auto;
+    width: 40%;
+    max-width: 500px;
+}
+#admin_page main .main-part #js-tab .inner-admin-panel-add form#js_new_user_form div{
+    margin: 0 auto;
+    text-align: center;
+}
+#admin_page main .main-part #js-tab .inner-admin-panel-add form#js_new_user_form label {
+    font-weight: bold;
+}
+#admin_page main .main-part #js-tab .inner-admin-panel-add form#js_new_user_form .btn {
+    display: block;
+    width: 40%;
+    min-width: 80px;
+    margin: 10px auto;
+}
+
+

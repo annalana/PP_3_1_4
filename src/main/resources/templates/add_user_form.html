@@ -1,8 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<div class="inner-admin-panel-add border" id="js-tab">
+<div class="inner-admin-panel-add border">
     <h6>Add new user</h6>
-    <div>
-        <form method="get" action="/admin/add" th:object="${newuser}" id="js_new_user_form">
+    <div class="border">
+        <form method="get" action="#" th:object="${newuser}" onsubmit="fetch_add(this); return false;" id="js_new_user_form">
             <div class="form-group">
                 <label for="login">Login</label>
                 <input type="text" class="form-control" name="login" th:field="*{username}" id="login">

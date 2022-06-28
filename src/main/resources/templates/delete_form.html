@@ -1,6 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <div>
-    <form id="editForm" action="/admin/delete" method="get" th:object="${user}">
+    <form id="deleteForm" action="#" method="get" th:onsubmit="'fetch_delete(' + ${user.id} + '); return false;'" th:object="${user}">
         <input type="hidden" name="id" th:field="*{id}">
         <div class="modal-body">
             <div class="form-group">
