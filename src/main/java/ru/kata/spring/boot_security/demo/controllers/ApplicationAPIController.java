@@ -32,13 +32,25 @@ public class ApplicationAPIController {
     public List<User> getUsersTable() {
         return userService.getUserList();
     }
-    @GetMapping(value = "/get_user")
-    public User getUser() {
-        return userService.getUser(1L);
-    }
+
     @GetMapping(value = "/add_user")
     public String addUser(@ModelAttribute User user) {
         userService.addUser(user);
         return "Success";
     }
+    @GetMapping(value = "/user/{id}")
+    public User getUser(@PathVariable Long id) {
+        return userService.getUser(id);
+    }
+    @GetMapping(value = "/delete_user/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        userService.removeUser(id);
+        return "Success";
+    }
+    @GetMapping(value = "/edit_user/{id}")
+    public String editUser(@PathVariable Long id, @ModelAttribute User user) {
+        userService.redactUser(id, user);
+        return "Success";
+    }
+
 }

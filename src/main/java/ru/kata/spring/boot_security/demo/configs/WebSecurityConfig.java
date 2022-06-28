@@ -26,20 +26,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.userDetailsService(userDetailsService);
         http
             .authorizeRequests()
-                .antMatchers("/admin/**", "/admin").hasRole("ADMIN")
+
                 .antMatchers("/", "/api/login", "/api/get_login", "/css/**", "/js/**").permitAll()
+                .antMatchers("api/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
-                .and()
+            .and()
                 .formLogin().loginPage("/")
                 .loginProcessingUrl("/api/login")
                 .successHandler(successUserHandler)
                 .permitAll()
-                .and()
+            .and()
                 .httpBasic()
-                .and()
+            .and()
                 .csrf().disable()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout/**" ))
-                .permitAll();
+            .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout/**" )).permitAll();
+
     }
     @Bean
     public PasswordEncoder getPasswordEncoder() {
